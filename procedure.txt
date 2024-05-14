@@ -1,0 +1,36 @@
+connect ec2
+ssh -i C:/Users/jayar/Documents/PythonServerKeyAsiaSouth.pem ubuntu@43.205.140.144
+
+copy files
+scp -i C:/Users/jayar/Documents/PythonServerKeyAsiaSouth.pem -r * ubuntu@43.205.140.144:/home/ubuntu/
+
+copy MAIN
+scp -i C:/Users/jayar/Documents/PythonServerKeyAsiaSouth.pem -r MAIN ubuntu@43.205.140.144:/home/ubuntu
+
+copy folder
+scp -i C:/Users/jayar/Documents/PythonServerKeyAsiaSouth.pem -r my_folder ubuntu@43.205.140.144:/home/ubuntu
+
+copy controller.py
+scp -i C:/Users/jayar/Documents/PythonServerKeyAsiaSouth.pem -r controller.py ubuntu@43.205.140.144:/home/ubuntu
+
+run
+nohup gunicorn -w 4 -b 0.0.0.0:5000 MAIN.server:app &
+nohup gunicorn -w 1 -b 0.0.0.0:5001 controller:app &
+
+stop gunicorn
+pkill -f "gunicorn -w 4 -b 0.0.0.0:5000 MAIN.server:app"
+pkill -f "gunicorn -w 1 -b 0.0.0.0:5001 controller:app"
+
+check running
+pgrep -c -f "gunicorn -w 4 -b 0.0.0.0:5000 MAIN.server:app"
+pgrep -c -f "gunicorn -w 1 -b 0.0.0.0:5001 controller:app"
+
+
+delete all
+rm -rf *
+
+
+sudo apt update
+sudo apt install python3-pip
+
+pip install flask pycryptodome flask-cors
